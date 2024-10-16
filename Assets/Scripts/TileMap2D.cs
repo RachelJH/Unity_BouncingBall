@@ -11,13 +11,19 @@ public class TileMap2D : MonoBehaviour
     private TMP_InputField inputWidth;
     [SerializeField]
     private TMP_InputField inputHeight;
+
+    private MapData mapData;
     public int Width { private set; get; } = 10;
     public int Height { private set; get; } = 10;
 
+    public List<Tile> TileList { private set; get; }
     private void Awake()
     {
         inputWidth.text = Width.ToString();
         inputHeight.text = Height.ToString();
+
+        mapData = new MapData();
+        TileList = new List<Tile>();
 
         //GenerateTilemap();
     }
@@ -42,6 +48,10 @@ public class TileMap2D : MonoBehaviour
                 SpawnTile(TileType.Empty, position);
             }
         }
+
+        mapData.mapSize.x = Width;
+        mapData.mapSize.y = Height;
+        mapData.mapData = new int[TileList.Count];
     }
     
     private void SpawnTile(TileType tileType, Vector3 position)
@@ -53,5 +63,27 @@ public class TileMap2D : MonoBehaviour
 
         Tile tile = clone.GetComponent<Tile>();
         tile.Setup(tileType);
+    
+        TileList.Add(tile);
+    }
+
+    public MapData GetMapData()
+    {
+        for (int i = 0; i < TileList.Count; i++)
+        {
+            if (TileList[i].TileType != TileType.Player)
+            {
+                mapData.mapData[i] = (int)TileList[i].TileType;
+            }
+            else
+            {
+                mapData.mapData[i] = (int)TileType.Empty;
+
+                int x = (int)TileList[i].transform.position.x;
+                int y = (int)TileList[i].transform.position.y;
+                mapData.playerPosition = new Vector2Int(x, y);
+            }
+        }
+        return mapData;
     }
 }
