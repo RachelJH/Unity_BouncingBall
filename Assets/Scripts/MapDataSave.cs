@@ -16,7 +16,7 @@ public class MapDataSave : MonoBehaviour
     {
         inputFileName.text = "NoName.json";
     }
-    public void Save()
+    public void Save() 
     {
         MapData mapData = tilemap2D.GetMapData();
 
